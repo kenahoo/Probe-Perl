@@ -1,8 +1,8 @@
 Build.PL
 Changes
-MANIFEST
-META.yml # Will be created by "make dist"
+lib/Probe/MyPerl.pm
 Makefile.PL
+MANIFEST			This list of files
+META.yml
 README
-lib/ExtUtils/MyPerlConfig.pm
 t/basic.t
