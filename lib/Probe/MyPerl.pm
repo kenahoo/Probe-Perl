@@ -1,4 +1,4 @@
-package Probe::MyPerl;
+package Probe::Perl;
 
 use vars qw( $VERSION );
 $VERSION = '0.01';
@@ -152,40 +152,40 @@ __END__
 
 =head1 NAME
 
-Probe::MyPerl - Information about the currently running perl
+Probe::Perl - Information about the currently running perl
 
 =head1 SYNOPSIS
 
- use Probe::MyPerl;
- $p = Probe::MyPerl->new();
+ use Probe::Perl;
+ $p = Probe::Perl->new();
  
  # Version of this perl as a floating point number
  $ver = $p->perl_version();
- $ver = Probe::MyPerl->perl_version();
+ $ver = Probe::Perl->perl_version();
  
  # Convert a multi-dotted string to a floating point number
  $ver = $p->perl_version_to_float($ver);
- $ver = Probe::MyPerl->perl_version_to_float($ver);
+ $ver = Probe::Perl->perl_version_to_float($ver);
  
  # Check if the given perl is the same as the one currently running
  $bool = $p->perl_is_same($perl_path);
- $bool = Probe::MyPerl->perl_is_same($perl_path);
+ $bool = Probe::Perl->perl_is_same($perl_path);
  
  # Find a path to the currently-running perl
  $path = $p->find_perl_interpreter();
- $path = Probe::MyPerl->find_perl_interpreter();
+ $path = Probe::Perl->find_perl_interpreter();
  
  # Get @INC before run-time additions
  @paths = $p->perl_inc();
- @paths = Probe::MyPerl->perl_inc();
+ @paths = Probe::Perl->perl_inc();
  
  # Get the general type of operating system
  $type = $p->os_type();
- $type = Probe::MyPerl->os_type();
+ $type = Probe::Perl->os_type();
  
  # Access Config.pm values
  $val = $p->config('foo');
- $val = Probe::MyPerl->config('foo');
+ $val = Probe::Perl->config('foo');
  $p->config('foo' => 'bar');  # Set locally
  $p->config_revert('foo');  # Revert
 
@@ -202,8 +202,8 @@ general use.
 
 =item new()
 
-Creates a new Probe::MyPerl object and returns it.  Most methods in
-the Probe::MyPerl packages are available as class methods, so you
+Creates a new Probe::Perl object and returns it.  Most methods in
+the Probe::Perl packages are available as class methods, so you
 don't always need to create a new object.  But if you want to create a
 mutable view of the C<Config.pm> data, it's necessary to create an
 object to store the values in.

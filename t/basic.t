@@ -3,10 +3,10 @@ use strict;
 use Test;
 BEGIN { plan tests => 26 }
 
-use Probe::MyPerl;
+use Probe::Perl;
 ok( 1 );
 
-my $configurator = tie( my %config, 'Probe::MyPerl' );
+my $configurator = tie( my %config, 'Probe::Perl' );
 ok( defined( $configurator ) );
 
 # underlying $Config value is present thru both tied and method calls
@@ -38,17 +38,17 @@ ok( "@{[$configurator->get( qw( a b c ) )]}" eq '1 2 3' );
 # has returns if user value || Config value exists
 ok( $configurator->has( 'version' ) );
 ok( ! $configurator->has( 'foobarbaz' ) );
-ok( Probe::MyPerl->has( 'version' ) );
-ok( ! Probe::MyPerl->has( 'foobarbaz' ) );
+ok( Probe::Perl->has( 'version' ) );
+ok( ! Probe::Perl->has( 'foobarbaz' ) );
 
-ok( Probe::MyPerl->os_type( 'linux' ) eq 'Unix' );
-ok( Probe::MyPerl->os_type( 'MSWin32' ) eq 'Windows' );
+ok( Probe::Perl->os_type( 'linux' ) eq 'Unix' );
+ok( Probe::Perl->os_type( 'MSWin32' ) eq 'Windows' );
 
 
 # both object and class method return same value
 my $perl1 = $configurator->find_perl_interpreter();
 ok( $perl1 );
-my $perl2 = Probe::MyPerl->find_perl_interpreter();
+my $perl2 = Probe::Perl->find_perl_interpreter();
 ok( $perl2 );
 ok( $perl1 eq $perl2 );
 
@@ -58,7 +58,7 @@ ok( $configurator->perl_is_same( $perl1 ) );
 # both object and class method return same value
 my $perl_vers1 = $configurator->perl_version();
 ok( $perl_vers1 );
-my $perl_vers2 = Probe::MyPerl->perl_version();
+my $perl_vers2 = Probe::Perl->perl_version();
 ok( $perl_vers2 );
 ok( $perl_vers1 eq $perl_vers2 );
 
@@ -66,7 +66,7 @@ ok( $perl_vers1 eq $perl_vers2 );
 my @perl_inc1 = $configurator->perl_inc();
 ok( @perl_inc1 );
 
-my @perl_inc2 = Probe::MyPerl->perl_inc();
+my @perl_inc2 = Probe::Perl->perl_inc();
 ok( @perl_inc2 );
 
 sub compare_array {

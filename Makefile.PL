@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-  NAME                => 'Probe::MyPerl',
+  NAME                => 'Probe::Perl',
   AUTHOR              => 'Randy W. Sims <randys@thepierianspring.org>',
   VERSION_FROM        => 'lib\ExtUtils\MyPerlConfig.pm',
   ABSTRACT_FROM       => 'lib\ExtUtils\MyPerlConfig.pm',

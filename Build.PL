@@ -3,7 +3,7 @@ use Module::Build;
 
 my $build = Module::Build->new
   (
-   module_name => 'Probe::MyPerl',
+   module_name => 'Probe::Perl',
    license     => 'perl',
    requires => {
 		'Config' => 0,
