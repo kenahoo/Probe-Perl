@@ -1,73 +1,62 @@
 
 use strict;
 use Test;
-BEGIN { plan tests => 26 }
+BEGIN { plan tests => 19 }
 
 use Probe::Perl;
-ok( 1 );
+ok 1;
 
-my $configurator = tie( my %config, 'Probe::Perl' );
-ok( defined( $configurator ) );
+my $pp = new Probe::Perl();
+ok defined $pp;
 
-# underlying $Config value is present thru both tied and method calls
 use Config;
-ok( $Config{version} eq $config{version} );
-ok( $Config{version} eq $configurator->get('version') );
+ok $Config{version}, $pp->config('version');
 
 # returns undef for non-existent keys
-ok( ! defined( $configurator->get( 'foobarbaz' ) ) );
+ok defined( $pp->config( 'foobarbaz' ) ), '';
 
-# basic set, has, and get test
-$configurator->set( foo => 'bar' );
-ok( $configurator->has( 'foo' ) );
-ok( $configurator->get( 'foo' ) eq 'bar' );
+# basic config test
+$pp->config( foo => 'bar' );
+ok $pp->config( 'foo' ), 'bar';
 
 # override $Config value
-my $perl = $configurator->get( 'perl' );
-$configurator->set( perl => 'otherperl' );
-ok( $configurator->get( 'perl' ) eq 'otherperl' );
+my $perl = $pp->config( 'perl' );
+$pp->config( perl => 'otherperl' );
+ok $pp->config( 'perl' ), 'otherperl';
 
 # undo override
-$configurator->unset( 'perl' );
-ok( $configurator->get( 'perl' ) eq $perl );
+$pp->config_revert( 'perl' );
+ok $pp->config( 'perl' ), $perl;
 
-# multiple set assignments
-$configurator->set( a => 1, b => 2, c => 3 );
-ok( "@{[$configurator->get( qw( a b c ) )]}" eq '1 2 3' );
-
-# has returns if user value || Config value exists
-ok( $configurator->has( 'version' ) );
-ok( ! $configurator->has( 'foobarbaz' ) );
-ok( Probe::Perl->has( 'version' ) );
-ok( ! Probe::Perl->has( 'foobarbaz' ) );
-
-ok( Probe::Perl->os_type( 'linux' ) eq 'Unix' );
-ok( Probe::Perl->os_type( 'MSWin32' ) eq 'Windows' );
+ok( Probe::Perl->os_type( 'linux' ), 'Unix');
+ok( Probe::Perl->os_type( 'MSWin32' ), 'Windows');
 
 
 # both object and class method return same value
-my $perl1 = $configurator->find_perl_interpreter();
-ok( $perl1 );
+my $perl1 = $pp->find_perl_interpreter();
+ok $perl1;
 my $perl2 = Probe::Perl->find_perl_interpreter();
-ok( $perl2 );
-ok( $perl1 eq $perl2 );
+ok $perl2;
+ok $perl1, $perl2;
 
-ok( $configurator->perl_is_same( $perl1 ) );
+ok $pp->perl_is_same( $perl1 );
 
 
 # both object and class method return same value
-my $perl_vers1 = $configurator->perl_version();
-ok( $perl_vers1 );
+my $perl_vers1 = $pp->perl_version();
+ok $perl_vers1;
 my $perl_vers2 = Probe::Perl->perl_version();
-ok( $perl_vers2 );
-ok( $perl_vers1 eq $perl_vers2 );
+ok $perl_vers2;
+ok $perl_vers1, $perl_vers2;
 
 
-my @perl_inc1 = $configurator->perl_inc();
-ok( @perl_inc1 );
+my @perl_inc1 = $pp->perl_inc();
+ok @perl_inc1;
 
 my @perl_inc2 = Probe::Perl->perl_inc();
-ok( @perl_inc2 );
+ok @perl_inc2;
+
+ok compare_array( \@perl_inc1, \@perl_inc2 );
 
 sub compare_array {
   my( $a1, $a2 ) = @_;
@@ -77,5 +66,3 @@ sub compare_array {
   }
   return 1;
 }
-
-ok( compare_array( \@perl_inc1, \@perl_inc2 ) );
