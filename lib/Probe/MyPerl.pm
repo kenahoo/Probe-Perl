@@ -12,83 +12,28 @@ use strict;
 use Config;
 use File::Spec;
 
-sub TIEHASH {
-  my $class = shift;
-  return $class->new(@_);
-}
-
-sub STORE { return shift()->set( @_ ) }
-
-sub FETCH { return shift()->get( @_ ) }
-
-sub EXISTS { return shift()->has( @_ ) }
-
-sub DELETE { return shift()->unset( @_ ) }
-
-sub CLEAR    { %{$_[0]} = () }
-
-sub FIRSTKEY { my $a = scalar keys %{$_[0]}; each %{$_[0]} }
-
-sub NEXTKEY  { each %{$_[0]} }
-
-sub SCALAR { 1 }
-
 sub new {
   my $class = shift;
   my $data  = shift || {};
   return bless( $data, $class );
 }
 
-sub has {
-  my $self = shift;
-  my $key  = shift;
-  return 1 if ref($self) && exists $self->{$key};
-  return exists( $Config{$key} );
-}
-
-
-sub set {
-  my ($self, %vars) = @_;
-  die "Can't use set() as a class method" unless ref($self);
-
-  $self->{$_} = $vars{$_} for keys( %vars );
-  return scalar( keys( %vars ) );
-}
-
 sub config {
   my ($self, $key) = (shift, shift);
   if (@_) {
     unless (ref $self) {
-      my $pkg = __PACKAGE__;
-      die "Can't set config values via $pkg->config() - use $pkg->new() to create a local view";
+      die "Can't set config values via $self->config().  Use $self->new() to create a local view";
     }
     $self->{$key} = shift;
   }
   return ref($self) && exists $self->{$key} ? $self->{$key} : $Config{$key};
 }
 
-sub get {
+sub config_revert {
   my $self = shift;
-
-  return map
-    { (ref($self) && exists $self->{$_}
-       ? $self->{$_}
-       : exists $Config{$_}
-       ? $Config{$_}
-       : undef)
-    } @_;
-}
-
-sub unset {
-  my $self = shift;
-  die "Can't use unset() as a class method" unless ref($self);
+  die "Can't use config_revert() as a class method" unless ref($self);
   
   delete $self->{$_} foreach @_;
-}
-
-sub dump {
-  my $self = shift;
-  return ref($self) ? (%Config, %$self) : %Config;
 }
 
 sub perl_version {
@@ -211,7 +156,38 @@ Probe::MyPerl - Information about the currently running perl
 
 =head1 SYNOPSIS
 
- ...
+ use Probe::MyPerl;
+ $p = Probe::MyPerl->new();
+ 
+ # Version of this perl as a floating point number
+ $ver = $p->perl_version();
+ $ver = Probe::MyPerl->perl_version();
+ 
+ # Convert a multi-dotted string to a floating point number
+ $ver = $p->perl_version_to_float($ver);
+ $ver = Probe::MyPerl->perl_version_to_float($ver);
+ 
+ # Check if the given perl is the same as the one currently running
+ $bool = $p->perl_is_same($perl_path);
+ $bool = Probe::MyPerl->perl_is_same($perl_path);
+ 
+ # Find a path to the currently-running perl
+ $path = $p->find_perl_interpreter();
+ $path = Probe::MyPerl->find_perl_interpreter();
+ 
+ # Get @INC before run-time additions
+ @paths = $p->perl_inc();
+ @paths = Probe::MyPerl->perl_inc();
+ 
+ # Get the general type of operating system
+ $type = $p->os_type();
+ $type = Probe::MyPerl->os_type();
+ 
+ # Access Config.pm values
+ $val = $p->config('foo');
+ $val = Probe::MyPerl->config('foo');
+ $p->config('foo' => 'bar');  # Set locally
+ $p->config_revert('foo');  # Revert
 
 =head1 DESCRIPTION
 
