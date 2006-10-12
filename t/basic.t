@@ -39,7 +39,7 @@ my $perl2 = Probe::Perl->find_perl_interpreter();
 ok $perl2;
 ok $perl1, $perl2;
 
-ok $pp->perl_is_same( $perl1 );
+ok $pp->perl_is_same( $perl1 ), 1, "$perl1 should be same as $perl2";
 
 
 # both object and class method return same value
