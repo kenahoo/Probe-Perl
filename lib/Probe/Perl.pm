@@ -48,9 +48,14 @@ sub perl_version_to_float {
   return $version;
 }
 
+sub _backticks {
+  open my $fh, '-|', @_ or die $!;
+  return wantarray ? <$fh> : do {local $/=undef; <$fh>};
+}
+
 sub perl_is_same {
   my ($self, $perl) = @_;
-  return `$perl -MConfig=myconfig -e print -e myconfig` eq Config->myconfig;
+  return _backticks($perl, qw(-MConfig=myconfig -e print -e myconfig)) eq Config->myconfig;
 }
 
 sub find_perl_interpreter {
@@ -85,7 +90,7 @@ sub perl_inc {
 
   my $perl = $self->find_perl_interpreter();
 
-  my @inc = `$perl -l -e print -e for -e \@INC`;
+  my @inc = _backticks($perl, qw(-l -e print -e for -e @INC));
   chomp @inc;
 
   return @inc;
