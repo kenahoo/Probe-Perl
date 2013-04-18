@@ -1,9 +1,6 @@
-package Probe::Perl;
-
-use vars qw( $VERSION );
-$VERSION = '0.01';
-
 use strict;
+
+package Probe::Perl;
 
 # TODO: cache values derived from launching an external perl process
 # TODO: docs refer to Config.pm and $self->{config}
