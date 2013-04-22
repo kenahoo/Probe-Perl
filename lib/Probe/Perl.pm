@@ -49,8 +49,23 @@ sub perl_version_to_float {
 }
 
 sub _backticks {
-  open my $fh, '-|', @_ or die $!;
-  return wantarray ? <$fh> : do {local $/=undef; <$fh>};
+  my $perl = shift;
+  return unless -e $perl;
+
+  if (open my $fh, '-|', $perl, @_) {
+    return <$fh> if wantarray;
+    return do {local $/=undef; <$fh>};
+  }
+
+  # Quoting only happens on the path to perl - I control the rest of
+  # the args and they don't need quoting.
+  if ($^O eq 'MSWin32') {
+    $perl = qq{"$perl"} if $perl =~ m{^[\w\\]+$};
+  } else {
+    $perl =~ s{([^\w\\])}{\\$1}g;
+  }
+
+  return `$perl @_`;
 }
 
 sub perl_is_same {
