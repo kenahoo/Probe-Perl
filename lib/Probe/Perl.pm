@@ -52,7 +52,9 @@ sub _backticks {
   my $perl = shift;
   return unless -e $perl;
 
-  if (open my $fh, '-|', $perl, @_) {
+  my $fh;
+  eval {open $fh, '-|', $perl, @_ or die $!};
+  if (!$@) {
     return <$fh> if wantarray;
     return do {local $/=undef; <$fh>};
   }
