@@ -56,7 +56,8 @@ sub _backticks {
   eval {open $fh, '-|', $perl, @_ or die $!};
   if (!$@) {
     return <$fh> if wantarray;
-    return do {local $/=undef; <$fh>};
+    my $tmp = do {local $/=undef; <$fh>};
+    return $tmp;
   }
 
   # Quoting only happens on the path to perl - I control the rest of
